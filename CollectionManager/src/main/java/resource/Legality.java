@@ -1,4 +1,4 @@
-package io.magicthegathering.javasdk.resource;
+package resource;
 
 import java.io.Serializable;
 

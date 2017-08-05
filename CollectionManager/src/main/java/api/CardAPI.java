@@ -1,6 +1,6 @@
-package io.magicthegathering.javasdk.api;
+package api;
 
-import io.magicthegathering.javasdk.resource.Card;
+import resource.Card;
 
 import java.util.List;
 

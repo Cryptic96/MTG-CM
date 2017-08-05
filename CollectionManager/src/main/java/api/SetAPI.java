@@ -1,4 +1,4 @@
-package io.magicthegathering.javasdk.api;
+package api;
 
 import io.magicthegathering.javasdk.resource.Card;
 import io.magicthegathering.javasdk.resource.MtgSet;

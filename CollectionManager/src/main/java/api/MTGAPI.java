@@ -1,4 +1,4 @@
-package io.magicthegathering.javasdk.api;
+package api;
 
 import io.magicthegathering.javasdk.exception.HttpRequestFailedException;
 
