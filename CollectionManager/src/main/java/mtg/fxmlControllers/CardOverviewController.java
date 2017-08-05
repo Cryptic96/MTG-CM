@@ -7,15 +7,21 @@ package mtg.fxmlControllers;
 
 import io.magicthegathering.javasdk.resource.Card;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
+import javafx.scene.control.Accordion;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.TitledPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.ImageViewBuilder;
 import mtg.managers.CardManager;
 
 /**
@@ -25,27 +31,34 @@ import mtg.managers.CardManager;
  */
 public class CardOverviewController implements Initializable, IController {
 
+    private int beginAmount = 0;
     private CardManager cardManager;
+    private List<TitledPane> cardPanes;
 
     // Buttons 
     @FXML
-    private Button btnLoadFromAPI;
+    private MenuItem btnLoadFromAPI;
     @FXML
-    private Button btnLoadFromFile;
+    private MenuItem btnLoadFromFile;
     @FXML
-    private Button btnWriteToFile;
+    private MenuItem btnWriteToFile;
     @FXML
     private ProgressIndicator progressIndicator;
 
-    // TableColumns
+    // Card View
     @FXML
-    private TableView<Card> tableViewCards;
+    private Accordion accordionCards;
     @FXML
-    private TableColumn<Card, String> nameColumn;
+    private ImageView cardImage;
+
+    // Page Controls
+    @FXML
+    private Label lblPage;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.cardManager = new CardManager(this);
+        this.cardPanes = new ArrayList<>();
     }
 
     @FXML
@@ -53,7 +66,7 @@ public class CardOverviewController implements Initializable, IController {
         btnLoadFromAPI.setDisable(true);
         btnLoadFromFile.setDisable(true);
         btnWriteToFile.setDisable(true);
-        progressIndicator.setVisible(true);
+        //progressIndicator.setVisible(true);
 
         cardManager.CallAllCardsFromAPI();
     }
@@ -63,7 +76,7 @@ public class CardOverviewController implements Initializable, IController {
         btnLoadFromAPI.setDisable(true);
         btnLoadFromFile.setDisable(true);
         btnWriteToFile.setDisable(true);
-        progressIndicator.setVisible(true);
+        //progressIndicator.setVisible(true);
 
         cardManager.ReadAllCardsFromFile();
     }
@@ -73,9 +86,29 @@ public class CardOverviewController implements Initializable, IController {
         btnLoadFromAPI.setDisable(true);
         btnLoadFromFile.setDisable(true);
         btnWriteToFile.setDisable(true);
-        progressIndicator.setVisible(true);
+        //progressIndicator.setVisible(true);
 
         cardManager.WriteAllCardsToFile();
+    }
+
+    @FXML
+    private void ButtonPreviousPage(ActionEvent event) {
+        if (beginAmount == 0) {
+            return;
+        }
+
+        beginAmount = beginAmount - 100;
+        refreshCards(beginAmount);
+    }
+
+    @FXML
+    private void ButtonNextPage(ActionEvent event) {
+        if ((beginAmount % 100) != 0) {
+            return;
+        }
+
+        beginAmount = beginAmount + 100;
+        refreshCards(beginAmount);
     }
 
     @Override
@@ -84,13 +117,37 @@ public class CardOverviewController implements Initializable, IController {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
+                    beginAmount = 0;
+
+                    for (Card c : cardManager.getCards()) {
+                        TitledPane tp = new TitledPane();
+                        tp.setUserData(c);
+                        tp.setText(c.getName());
+                        cardPanes.add(tp);
+                    }
+
+                    Image image = new Image(cardManager.getCards().get(1).getImageUrl());
+                    cardImage.setImage(image);
+
+                    refreshCards(beginAmount);
+
                     btnLoadFromAPI.setDisable(false);
                     btnLoadFromFile.setDisable(false);
                     btnWriteToFile.setDisable(false);
-                    progressIndicator.setVisible(false);
+//                    progressIndicator.setVisible(false);
                 }
             });
         } catch (Exception e) {
+            System.err.println(e);
         }
+    }
+
+    private void refreshCards(int begin) {
+        accordionCards.getPanes().clear();
+        for (int i = begin; i <= (begin + 100); i++) {
+            TitledPane tp = cardPanes.get(i);
+            accordionCards.getPanes().add(tp);
+        }
+        lblPage.setText(beginAmount + " - " + (beginAmount + 100));
     }
 }

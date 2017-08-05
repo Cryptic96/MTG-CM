@@ -1,30 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
 <AnchorPane id="AnchorPane" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mtg.fxmlControllers.CardOverviewController">
    <children>
-      <ScrollPane hbarPolicy="ALWAYS" layoutX="15.0" layoutY="15.0" prefWidth="1035.0" style="-fx-border-color: #000;" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="230.0" AnchorPane.topAnchor="15.0">
+      <MenuBar prefHeight="25.0" prefWidth="1280.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem fx:id="btnLoadFromAPI" mnemonicParsing="false" onAction="#ButtonLoadFromAPI" text="Reload from API" />
+                  <MenuItem fx:id="btnLoadFromFile" mnemonicParsing="false" onAction="#ButtonLoadFromFile" text="Reload from File" />
+                  <MenuItem fx:id="btnWriteToFile" mnemonicParsing="false" onAction="#ButtonWriteToFile" text="Write cards to File" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="15.0" layoutY="40.0" prefHeight="625.0" prefWidth="1000.0" style="-fx-border-color: #000;" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="265.0" AnchorPane.topAnchor="40.0">
          <content>
-            <TableView prefHeight="200.0" prefWidth="910.0">
-              <columns>
-                <TableColumn fx:id="colName" minWidth="-Infinity" prefWidth="250.0" text="name" />
-              </columns>
-            </TableView>
+            <Accordion fx:id="accordionCards" />
          </content>
       </ScrollPane>
-      <Pane layoutX="1065.0" layoutY="15.0" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: #000;" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
+      <Button layoutX="15.0" layoutY="680.0" mnemonicParsing="false" onAction="#ButtonPreviousPage" prefHeight="25.0" prefWidth="150.0" text="Prefious Page" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" />
+      <Label fx:id="lblPage" alignment="CENTER" layoutX="180.0" layoutY="680.0" prefHeight="25.0" prefWidth="100.0" text="0 - 100" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="180.0" />
+      <Button layoutX="295.0" layoutY="680.0" mnemonicParsing="false" onAction="#ButtonNextPage" prefHeight="25.0" prefWidth="150.0" text="Next Page" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="295.0" />
+      <Pane layoutX="1030.0" layoutY="40.0" prefHeight="400.0" prefWidth="235.0" style="-fx-border-color: #000;" AnchorPane.bottomAnchor="280.0" AnchorPane.leftAnchor="1030.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="40.0">
          <children>
-            <Button fx:id="btnLoadFromAPI" layoutX="15.0" layoutY="15.0" mnemonicParsing="false" onAction="#ButtonLoadFromAPI" prefHeight="30.0" prefWidth="170.0" text="Reload from API" />
-            <Button fx:id="btnLoadFromFile" layoutX="15.0" layoutY="60.0" mnemonicParsing="false" onAction="#ButtonLoadFromFile" prefHeight="30.0" prefWidth="170.0" text="Reload from File" />
-            <Button fx:id="btnWriteToFile" layoutX="15.0" layoutY="105.0" mnemonicParsing="false" onAction="#ButtonWriteToFile" prefHeight="30.0" prefWidth="170.0" text="Write cards to File" />
-            <ProgressIndicator fx:id="progressIndicator" layoutX="15.0" layoutY="150.0" prefHeight="40.0" prefWidth="170.0" visible="false" />
+            <ImageView fx:id="cardImage" fitHeight="400.0" fitWidth="235.0" pickOnBounds="true" preserveRatio="true" />
          </children>
       </Pane>
    </children>
