@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
 <AnchorPane id="AnchorPane" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mtg.fxmlControllers.CardOverviewController">
    <children>
-      <Pane layoutX="1066.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: #000;">
+      <ScrollPane hbarPolicy="ALWAYS" layoutX="15.0" layoutY="15.0" prefWidth="1035.0" style="-fx-border-color: #000;" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="230.0" AnchorPane.topAnchor="15.0">
+         <content>
+            <TableView prefHeight="200.0" prefWidth="910.0">
+              <columns>
+                <TableColumn minWidth="-Infinity" prefWidth="250.0" text="name" />
+                <TableColumn prefWidth="75.0" text="layout" />
+                  <TableColumn prefWidth="75.0" text="cmc" />
+              </columns>
+            </TableView>
+         </content>
+      </ScrollPane>
+      <Pane layoutX="1065.0" layoutY="15.0" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: #000;" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
          <children>
             <Button fx:id="btnLoadFromAPI" layoutX="15.0" layoutY="15.0" mnemonicParsing="false" onAction="#ButtonLoadFromAPI" prefHeight="30.0" prefWidth="170.0" text="Reload from API" />
             <Button fx:id="btnLoadFromFile" layoutX="15.0" layoutY="60.0" mnemonicParsing="false" onAction="#ButtonLoadFromFile" prefHeight="30.0" prefWidth="170.0" text="Reload from File" />
@@ -17,10 +29,5 @@
             <ProgressIndicator fx:id="progressIndicator" layoutX="15.0" layoutY="150.0" prefHeight="40.0" prefWidth="170.0" visible="false" />
          </children>
       </Pane>
-      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="15.0" layoutY="15.0" prefHeight="192.0" prefWidth="500.0" style="-fx-border-color: #000;" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="765.0" AnchorPane.topAnchor="15.0">
-         <content>
-            <Accordion fx:id="accordionPaneCards" prefWidth="496.0" />
-         </content>
-      </ScrollPane>
    </children>
 </AnchorPane>
