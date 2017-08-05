@@ -1,5 +1,8 @@
-package com.mycompany.collectionmanager;
+package main;
 
+import io.magicthegathering.javasdk.api.CardAPI;
+import io.magicthegathering.javasdk.resource.Card;
+import java.util.List;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
@@ -12,14 +15,21 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
         
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add("/styles/Styles.css");
+        List<Card> cards = CardAPI.getAllCards();
         
-        stage.setTitle("JavaFX and Maven");
-        stage.setScene(scene);
-        stage.show();
+        for(Card c : cards){
+            System.out.println(c.getName());
+        }
+        
+//        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
+//        
+//        Scene scene = new Scene(root);
+//        scene.getStylesheets().add("/styles/Styles.css");
+//        
+//        stage.setTitle("JavaFX and Maven");
+//        stage.setScene(scene);
+//        stage.show();
     }
 
     /**
@@ -31,7 +41,7 @@ public class MainApp extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        launch(args);
+       launch(args);
     }
 
 }
