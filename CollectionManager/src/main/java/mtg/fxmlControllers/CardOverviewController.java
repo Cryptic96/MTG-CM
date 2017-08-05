@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Accordion;
@@ -21,7 +22,8 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.ImageViewBuilder;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import mtg.managers.CardManager;
 
 /**
@@ -34,6 +36,7 @@ public class CardOverviewController implements Initializable, IController {
     private int beginAmount = 0;
     private CardManager cardManager;
     private List<TitledPane> cardPanes;
+    private TitledPane selectedTitledPane;
 
     // Buttons 
     @FXML
@@ -98,7 +101,7 @@ public class CardOverviewController implements Initializable, IController {
         }
 
         beginAmount = beginAmount - 100;
-        refreshCards(beginAmount);
+        refreshCardPages(beginAmount);
     }
 
     @FXML
@@ -108,7 +111,7 @@ public class CardOverviewController implements Initializable, IController {
         }
 
         beginAmount = beginAmount + 100;
-        refreshCards(beginAmount);
+        refreshCardPages(beginAmount);
     }
 
     @Override
@@ -118,18 +121,8 @@ public class CardOverviewController implements Initializable, IController {
                 @Override
                 public void run() {
                     beginAmount = 0;
-
-                    for (Card c : cardManager.getCards()) {
-                        TitledPane tp = new TitledPane();
-                        tp.setUserData(c);
-                        tp.setText(c.getName());
-                        cardPanes.add(tp);
-                    }
-
-                    Image image = new Image(cardManager.getCards().get(1).getImageUrl());
-                    cardImage.setImage(image);
-
-                    refreshCards(beginAmount);
+                    CardToTitlePaneConverter();
+                    refreshCardPages(beginAmount);
 
                     btnLoadFromAPI.setDisable(false);
                     btnLoadFromFile.setDisable(false);
@@ -142,7 +135,51 @@ public class CardOverviewController implements Initializable, IController {
         }
     }
 
-    private void refreshCards(int begin) {
+    private void CardToTitlePaneConverter() {
+        for (Card c : cardManager.getCards()) {
+            final TitledPane tp = new TitledPane();
+            tp.setUserData(c);
+            tp.setText(c.getName());
+            tp.setOnMouseClicked(new EventHandler<javafx.scene.input.MouseEvent>() {
+                @Override
+                public void handle(javafx.scene.input.MouseEvent event) {
+                    tp.setContent(addCardComponents(tp));
+                }
+            });
+            cardPanes.add(tp);
+        }
+    }
+
+    private Pane addCardComponents(TitledPane tp) {
+        Card c = (Card) tp.getUserData();
+
+        Pane pane = new Pane();
+        pane.setPrefHeight(500);
+
+        // image pane
+        Pane imagePane = new Pane();
+        imagePane.setPrefSize(226, 311);
+        imagePane.setLayoutX(15);
+        imagePane.setLayoutY(15);
+        imagePane.setStyle("-fx-border-color: #000");
+        pane.getChildren().add(imagePane);
+
+        // imageview
+        ImageView imageview = new ImageView();
+        imageview.setFitWidth(226);
+        imageview.setFitHeight(311);
+        imageview.setLayoutX(0);
+        imageview.setLayoutY(0);
+        imagePane.getChildren().add(imageview);
+
+        // image
+        Image image = new Image(c.getImageUrl());
+        imageview.setImage(image);
+
+        return pane;
+    }
+
+    private void refreshCardPages(int begin) {
         accordionCards.getPanes().clear();
         for (int i = begin; i <= (begin + 100); i++) {
             TitledPane tp = cardPanes.get(i);
