@@ -26,6 +26,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.TilePane;
 import mtg.managers.CardManager;
 
 /**
@@ -64,6 +65,9 @@ public class CardOverviewController implements Initializable, IController {
     public void initialize(URL url, ResourceBundle rb) {
         this.cardManager = new CardManager(this);
         this.cardPanes = new ArrayList<>();
+
+        // fill cards at the beginning
+        cardManager.ReadAllCardsFromFile();
     }
 
     @FXML
@@ -141,7 +145,7 @@ public class CardOverviewController implements Initializable, IController {
         for (Card c : cardManager.getCards()) {
             final TitledPane tp = new TitledPane();
             tp.setUserData(c);
-            tp.setText(c.getName());
+            tp.setText(c.getName() + " - (" + c.getReleaseDate() + ")");
             tp.setContent(addCardComponents());
 
             tp.heightProperty().addListener(new ChangeListener<Number>() {
@@ -152,24 +156,12 @@ public class CardOverviewController implements Initializable, IController {
                     Pane imagePane = (Pane) pane.getChildren().get(0);
                     ImageView imageView = (ImageView) imagePane.getChildren().get(0);
 
-                    if (tp.getHeight() < 50) {
-                        imageView.setImage(null);
-                    } else {
+                    if (imageView.getImage() == null && c.getImageUrl() != null && tp.getHeight() > 50) {
                         imageView.setImage(new Image(c.getImageUrl()));
                     }
                 }
             });
 
-//            tp.setOnMouseClicked(new EventHandler<javafx.scene.input.MouseEvent>() {
-//                @Override
-//                public void handle(javafx.scene.input.MouseEvent event) {
-//                    Card c = (Card) tp.getUserData();
-//                    Pane pane = (Pane) tp.getContent();
-//                    Pane imagePane = (Pane) pane.getChildren().get(0);
-//                    ImageView imageView = (ImageView) imagePane.getChildren().get(0);
-//                    imageView.setImage(new Image(c.getImageUrl()));
-//                }
-//            });
             cardPanes.add(tp);
         }
     }
@@ -219,31 +211,47 @@ public class CardOverviewController implements Initializable, IController {
 
         @Override
         public void run() {
-            int lastIndex;
             for (int i = begin; i <= (begin + 100); i++) {
+                TitledPane tp = cardPanes.get(i);
                 // fill next image
-                
+                Card c = (Card) tp.getUserData();
+                Pane pane = (Pane) tp.getContent();
+                Pane imagePane = (Pane) pane.getChildren().get(0);
+                ImageView imageView = (ImageView) imagePane.getChildren().get(0);
+
+                if (imageView.getImage() == null && c.getImageUrl() != null) {
+                    imageView.setImage(new Image(c.getImageUrl()));
+                }
+
                 if (cardStartIndex != begin) {
-                    lastIndex = i;
                     break;
                 }
             }
-            while(cardStartIndex == begin){
+            
+            // Wait for User to change page
+            while (cardStartIndex == begin) {
                 try {
                     Thread.sleep(100);
-                } catch (Exception e) {
+                } catch (InterruptedException e) {
                 }
             }
             // destruct images in thread
             for (int i = begin; i <= (begin + 100); i++) {
-                // fill next image
+                // empty all images
+                TitledPane tp = cardPanes.get(i);
+                Pane pane = (Pane) tp.getContent();
+                Pane imagePane = (Pane) pane.getChildren().get(0);
+                ImageView imageView = (ImageView) imagePane.getChildren().get(0);
+
+                if (imageView.getImage() != null) {
+                    imageView.setImage(null);
+                }
                 
-                if (cardStartIndex != begin) {
-                    lastIndex = i;
-                    break;
+                // Stop cleaning if User goes back to this page
+                if (cardStartIndex == begin) {
+                    return;
                 }
             }
         }
-
     }
 }

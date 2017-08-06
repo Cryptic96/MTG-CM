@@ -1,9 +1,11 @@
 mtg\fxmlControllers\CardOverviewController$2.class
-mtg\main\CollectionManager.class
 mtg\managers\CardManager$2.class
-mtg\managers\CardManager.class
 mtg\fxmlControllers\CardOverviewController$1.class
 mtg\managers\CardManager$1.class
+mtg\fxmlControllers\CardOverviewController$FillImages.class
+mtg\fxmlControllers\IController.class
+mtg\main\CollectionManager.class
+mtg\managers\CardManager.class
 mtg\managers\CardManager$3.class
 mtg\fxmlControllers\CardOverviewController.class
-mtg\fxmlControllers\IController.class
+mtg\main\CollectionManager$1.class
