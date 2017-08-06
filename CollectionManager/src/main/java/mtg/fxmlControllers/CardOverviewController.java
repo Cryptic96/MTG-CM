@@ -140,12 +140,15 @@ public class CardOverviewController implements Initializable, IController {
             final TitledPane tp = new TitledPane();
             tp.setUserData(c);
             tp.setText(c.getName());
+            tp.setContent(addCardComponents(tp));
+            
             tp.setOnMouseClicked(new EventHandler<javafx.scene.input.MouseEvent>() {
                 @Override
                 public void handle(javafx.scene.input.MouseEvent event) {
-                    tp.setContent(addCardComponents(tp));
+                    
                 }
             });
+            
             cardPanes.add(tp);
         }
     }
@@ -173,8 +176,8 @@ public class CardOverviewController implements Initializable, IController {
         imagePane.getChildren().add(imageview);
 
         // image
-        Image image = new Image(c.getImageUrl());
-        imageview.setImage(image);
+//        Image image = new Image(c.getImageUrl());
+//        imageview.setImage(image);
 
         return pane;
     }
