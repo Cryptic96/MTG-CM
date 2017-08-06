@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -33,7 +35,7 @@ import mtg.managers.CardManager;
  */
 public class CardOverviewController implements Initializable, IController {
 
-    private int beginAmount = 0;
+    private int cardStartIndex = 0;
     private CardManager cardManager;
     private List<TitledPane> cardPanes;
     private TitledPane selectedTitledPane;
@@ -96,22 +98,22 @@ public class CardOverviewController implements Initializable, IController {
 
     @FXML
     private void ButtonPreviousPage(ActionEvent event) {
-        if (beginAmount == 0) {
+        if (cardStartIndex == 0) {
             return;
         }
 
-        beginAmount = beginAmount - 100;
-        refreshCardPages(beginAmount);
+        cardStartIndex = cardStartIndex - 100;
+        refreshCardPages(cardStartIndex);
     }
 
     @FXML
     private void ButtonNextPage(ActionEvent event) {
-        if ((beginAmount % 100) != 0) {
+        if ((cardStartIndex % 100) != 0) {
             return;
         }
 
-        beginAmount = beginAmount + 100;
-        refreshCardPages(beginAmount);
+        cardStartIndex = cardStartIndex + 100;
+        refreshCardPages(cardStartIndex);
     }
 
     @Override
@@ -120,9 +122,9 @@ public class CardOverviewController implements Initializable, IController {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    beginAmount = 0;
+                    cardStartIndex = 0;
                     CardToTitlePaneConverter();
-                    refreshCardPages(beginAmount);
+                    refreshCardPages(cardStartIndex);
 
                     btnLoadFromAPI.setDisable(false);
                     btnLoadFromFile.setDisable(false);
@@ -140,22 +142,39 @@ public class CardOverviewController implements Initializable, IController {
             final TitledPane tp = new TitledPane();
             tp.setUserData(c);
             tp.setText(c.getName());
-            tp.setContent(addCardComponents(tp));
-            
-            tp.setOnMouseClicked(new EventHandler<javafx.scene.input.MouseEvent>() {
+            tp.setContent(addCardComponents());
+
+            tp.heightProperty().addListener(new ChangeListener<Number>() {
                 @Override
-                public void handle(javafx.scene.input.MouseEvent event) {
-                    
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                    Card c = (Card) tp.getUserData();
+                    Pane pane = (Pane) tp.getContent();
+                    Pane imagePane = (Pane) pane.getChildren().get(0);
+                    ImageView imageView = (ImageView) imagePane.getChildren().get(0);
+
+                    if (tp.getHeight() < 50) {
+                        imageView.setImage(null);
+                    } else {
+                        imageView.setImage(new Image(c.getImageUrl()));
+                    }
                 }
             });
-            
+
+//            tp.setOnMouseClicked(new EventHandler<javafx.scene.input.MouseEvent>() {
+//                @Override
+//                public void handle(javafx.scene.input.MouseEvent event) {
+//                    Card c = (Card) tp.getUserData();
+//                    Pane pane = (Pane) tp.getContent();
+//                    Pane imagePane = (Pane) pane.getChildren().get(0);
+//                    ImageView imageView = (ImageView) imagePane.getChildren().get(0);
+//                    imageView.setImage(new Image(c.getImageUrl()));
+//                }
+//            });
             cardPanes.add(tp);
         }
     }
 
-    private Pane addCardComponents(TitledPane tp) {
-        Card c = (Card) tp.getUserData();
-
+    private Pane addCardComponents() {
         Pane pane = new Pane();
         pane.setPrefHeight(500);
 
@@ -175,19 +194,56 @@ public class CardOverviewController implements Initializable, IController {
         imageview.setLayoutY(0);
         imagePane.getChildren().add(imageview);
 
-        // image
-//        Image image = new Image(c.getImageUrl());
-//        imageview.setImage(image);
-
         return pane;
     }
 
     private void refreshCardPages(int begin) {
         accordionCards.getPanes().clear();
-        for (int i = begin; i <= (begin + 100); i++) {
+        for (int i = begin; i < (begin + 100); i++) {
             TitledPane tp = cardPanes.get(i);
             accordionCards.getPanes().add(tp);
         }
-        lblPage.setText(beginAmount + " - " + (beginAmount + 100));
+        lblPage.setText((cardStartIndex + 1) + " - " + (cardStartIndex + 100));
+
+        // Thread image loading shizzle
+        new Thread(new FillImages(begin)).start();
+    }
+
+    class FillImages implements Runnable {
+
+        int begin;
+
+        public FillImages(int begin) {
+            this.begin = begin;
+        }
+
+        @Override
+        public void run() {
+            int lastIndex;
+            for (int i = begin; i <= (begin + 100); i++) {
+                // fill next image
+                
+                if (cardStartIndex != begin) {
+                    lastIndex = i;
+                    break;
+                }
+            }
+            while(cardStartIndex == begin){
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                }
+            }
+            // destruct images in thread
+            for (int i = begin; i <= (begin + 100); i++) {
+                // fill next image
+                
+                if (cardStartIndex != begin) {
+                    lastIndex = i;
+                    break;
+                }
+            }
+        }
+
     }
 }
