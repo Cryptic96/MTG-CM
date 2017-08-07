@@ -5,28 +5,32 @@
  */
 package mtg.fxmlControllers;
 
+import com.sun.javafx.property.adapter.PropertyDescriptor;
 import io.magicthegathering.javasdk.resource.Card;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.TilePane;
 import mtg.managers.CardManager;
 
 /**
@@ -34,13 +38,15 @@ import mtg.managers.CardManager;
  *
  * @author Theun Schut
  */
-public class CardOverviewController implements Initializable, IController {
+public class CardOverviewController implements Initializable, IController
+{
 
     private int cardStartIndex = 0;
     private CardManager cardManager;
     private List<TitledPane> cardPanes;
     private TitledPane selectedTitledPane;
-
+    private Image defaultImage;
+    private static final String DEFAULT_STRING = "No Data yet";
     // Buttons 
     @FXML
     private MenuItem btnLoadFromAPI;
@@ -61,8 +67,20 @@ public class CardOverviewController implements Initializable, IController {
     @FXML
     private Label lblPage;
 
+    public CardOverviewController()
+    {
+        try
+        {
+            this.defaultImage = new Image(new FileInputStream("./files/default_image.png"));
+        } catch (FileNotFoundException ex)
+        {
+            System.err.println(ex);
+        }
+    }
+
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
+    public void initialize(URL url, ResourceBundle rb)
+    {
         this.cardManager = new CardManager(this);
         this.cardPanes = new ArrayList<>();
 
@@ -71,7 +89,8 @@ public class CardOverviewController implements Initializable, IController {
     }
 
     @FXML
-    private void ButtonLoadFromAPI(ActionEvent event) {
+    private void ButtonLoadFromAPI(ActionEvent event)
+    {
         btnLoadFromAPI.setDisable(true);
         btnLoadFromFile.setDisable(true);
         btnWriteToFile.setDisable(true);
@@ -81,7 +100,8 @@ public class CardOverviewController implements Initializable, IController {
     }
 
     @FXML
-    private void ButtonLoadFromFile(ActionEvent event) {
+    private void ButtonLoadFromFile(ActionEvent event)
+    {
         btnLoadFromAPI.setDisable(true);
         btnLoadFromFile.setDisable(true);
         btnWriteToFile.setDisable(true);
@@ -91,7 +111,8 @@ public class CardOverviewController implements Initializable, IController {
     }
 
     @FXML
-    private void ButtonWriteToFile(ActionEvent event) {
+    private void ButtonWriteToFile(ActionEvent event)
+    {
         btnLoadFromAPI.setDisable(true);
         btnLoadFromFile.setDisable(true);
         btnWriteToFile.setDisable(true);
@@ -101,8 +122,10 @@ public class CardOverviewController implements Initializable, IController {
     }
 
     @FXML
-    private void ButtonPreviousPage(ActionEvent event) {
-        if (cardStartIndex == 0) {
+    private void ButtonPreviousPage(ActionEvent event)
+    {
+        if (cardStartIndex == 0)
+        {
             return;
         }
 
@@ -111,8 +134,10 @@ public class CardOverviewController implements Initializable, IController {
     }
 
     @FXML
-    private void ButtonNextPage(ActionEvent event) {
-        if ((cardStartIndex % 100) != 0) {
+    private void ButtonNextPage(ActionEvent event)
+    {
+        if ((cardStartIndex % 100) != 0)
+        {
             return;
         }
 
@@ -121,11 +146,15 @@ public class CardOverviewController implements Initializable, IController {
     }
 
     @Override
-    public void refresh() {
-        try {
-            Platform.runLater(new Runnable() {
+    public void refresh()
+    {
+        try
+        {
+            Platform.runLater(new Runnable()
+            {
                 @Override
-                public void run() {
+                public void run()
+                {
                     cardStartIndex = 0;
                     CardToTitlePaneConverter();
                     refreshCardPages(cardStartIndex);
@@ -136,28 +165,62 @@ public class CardOverviewController implements Initializable, IController {
 //                    progressIndicator.setVisible(false);
                 }
             });
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             System.err.println(e);
         }
     }
 
-    private void CardToTitlePaneConverter() {
-        for (Card c : cardManager.getCards()) {
+    private void CardToTitlePaneConverter()
+    {
+        for (Card c : cardManager.getCards())
+        {
             final TitledPane tp = new TitledPane();
             tp.setUserData(c);
-            tp.setText(c.getName() + " - (" + c.getReleaseDate() + ")");
+            if (c.getReleaseDate() == null)
+            {
+                tp.setText(c.getName() + " - (unknown date)");
+            } else
+            {
+                tp.setText(c.getName() + " - (" + c.getReleaseDate() + ")");
+            }
             tp.setContent(addCardComponents());
 
-            tp.heightProperty().addListener(new ChangeListener<Number>() {
+            tp.heightProperty().addListener(new ChangeListener<Number>()
+            {
                 @Override
-                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
+                {
                     Card c = (Card) tp.getUserData();
                     Pane pane = (Pane) tp.getContent();
                     Pane imagePane = (Pane) pane.getChildren().get(0);
                     ImageView imageView = (ImageView) imagePane.getChildren().get(0);
 
-                    if (imageView.getImage() == null && c.getImageUrl() != null && tp.getHeight() > 50) {
-                        imageView.setImage(new Image(c.getImageUrl()));
+                    if (imageView.getImage() == null && tp.getHeight() > 50)
+                    {
+                        if (c.getImageUrl() == null)
+                        {
+                            fillFieldData(tp);
+                            if (defaultImage == null)
+                            {
+                                InputStream in;
+                                try
+                                {
+                                    in = new FileInputStream("./files/default_image.png");
+                                    defaultImage = new Image(in);
+                                    imageView.setImage(defaultImage);
+                                } catch (FileNotFoundException ex)
+                                {
+                                    System.err.println(ex.getMessage());
+                                }
+                            } else
+                            {
+                                imageView.setImage(defaultImage);
+                            }
+                        } else
+                        {
+                            imageView.setImage(new Image(c.getImageUrl()));
+                        }
                     }
                 }
             });
@@ -166,8 +229,9 @@ public class CardOverviewController implements Initializable, IController {
         }
     }
 
-    private Pane addCardComponents() {
-        Pane pane = new Pane();
+    private Pane addCardComponents()
+    {
+        final Pane pane = new Pane();
         pane.setPrefHeight(500);
 
         // image pane
@@ -186,12 +250,44 @@ public class CardOverviewController implements Initializable, IController {
         imageview.setLayoutY(0);
         imagePane.getChildren().add(imageview);
 
+        // panel for labels for the card fields
+        final ScrollPane labelScrollPane = new ScrollPane();
+        labelScrollPane.setPrefSize(600, 311);
+        labelScrollPane.setLayoutX(256);
+        labelScrollPane.setLayoutY(15);
+        labelScrollPane.setStyle("-fx-border-color: #000");
+        pane.getChildren().add(labelScrollPane);
+        pane.widthProperty().addListener(new ChangeListener<Number>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
+            {
+                labelScrollPane.setPrefWidth(pane.getWidth() - 270);
+                pane.getWidth();
+            }
+        });
+
+        //put Pane in scrollpane
+        Pane labelPane = new Pane();
+        //labelPane.setPrefSize(600, 311);
+//        labelPane.setLayoutX(256);
+//        labelPane.setLayoutY(15);
+        labelScrollPane.setContent(labelPane);
+
+        // add Strings to label
+        StringBuilder sBuilder = new StringBuilder();
+        sBuilder.append(DEFAULT_STRING);
+
+        Label lblCollection = new Label(sBuilder.toString());
+        labelPane.getChildren().add(lblCollection);
         return pane;
     }
 
-    private void refreshCardPages(int begin) {
+    private void refreshCardPages(int begin)
+    {
         accordionCards.getPanes().clear();
-        for (int i = begin; i < (begin + 100); i++) {
+        for (int i = begin; i < (begin + 100); i++)
+        {
             TitledPane tp = cardPanes.get(i);
             accordionCards.getPanes().add(tp);
         }
@@ -201,54 +297,207 @@ public class CardOverviewController implements Initializable, IController {
         new Thread(new FillImages(begin)).start();
     }
 
-    class FillImages implements Runnable {
+    void fillFieldData(TitledPane tp)
+    {
+        Pane pane = (Pane) tp.getContent();
+        Pane labelPane = (Pane) ((ScrollPane) pane.getChildren().get(1)).getContent();
+        final Label label = (Label) labelPane.getChildren().get(0);
+        if (label.getText().length() > 15)
+        {
+            return;
+        }
+        Card c = (Card) tp.getUserData();
+        // add Strings to label
+        final StringBuilder sBuilder = new StringBuilder();
+        sBuilder.append("ID: ");
+        sBuilder.append(c.getId());
+        sBuilder.append("\n");
+        sBuilder.append("Layout: ");
+        sBuilder.append(c.getLayout());
+        sBuilder.append("\n");
+        sBuilder.append("Name: ");
+        sBuilder.append(c.getName());
+        sBuilder.append("\n");
+        sBuilder.append("Names: ");
+        sBuilder.append(c.getNames());
+        sBuilder.append("\n");
+        sBuilder.append("Mana cost: ");
+        sBuilder.append(c.getManaCost());
+        sBuilder.append("\n");
+        sBuilder.append("CMC: ");
+        sBuilder.append(c.getCmc());
+        sBuilder.append("\n");
+        sBuilder.append("Colours: ");
+        sBuilder.append(c.getColors());
+        sBuilder.append("\n");
+        sBuilder.append("Colour Identity: ");
+        sBuilder.append(c.getColorIdentity());
+        sBuilder.append("\n");
+        sBuilder.append("Type: ");
+        sBuilder.append(c.getType());
+        sBuilder.append("\n");
+        sBuilder.append("Supertypes: ");
+        sBuilder.append(c.getSupertypes());
+        sBuilder.append("\n");
+        sBuilder.append("Types: ");
+        sBuilder.append(c.getTypes());
+        sBuilder.append("\n");
+        sBuilder.append("SubTypes: ");
+        sBuilder.append(c.getSubtypes());
+        sBuilder.append("\n");
+        sBuilder.append("Rarity: ");
+        sBuilder.append(c.getRarity());
+        sBuilder.append("\n");
+        sBuilder.append("Text: ");
+        sBuilder.append(c.getText());
+        sBuilder.append("\n");
+        sBuilder.append("Original Text: ");
+        sBuilder.append(c.getOriginalText());
+        sBuilder.append("\n");
+        sBuilder.append("Flavour: ");
+        sBuilder.append(c.getFlavor());
+        sBuilder.append("\n");
+        sBuilder.append("Artist: ");
+        sBuilder.append(c.getArtist());
+        sBuilder.append("\n");
+        sBuilder.append("Number: ");
+        sBuilder.append(c.getNumber());
+        sBuilder.append("\n");
+        sBuilder.append("Power: ");
+        sBuilder.append(c.getPower());
+        sBuilder.append("\n");
+        sBuilder.append("Toughness: ");
+        sBuilder.append(c.getToughness());
+        sBuilder.append("\n");
+        sBuilder.append("Loyalty: ");
+        sBuilder.append(c.getLoyalty());
+        sBuilder.append("\n");
+        sBuilder.append("Multiverse ID: ");
+        sBuilder.append(c.getMultiverseid());
+        sBuilder.append("\n");
+        sBuilder.append("Variations: ");
+        sBuilder.append(c.getVariations());
+        sBuilder.append("\n");
+        sBuilder.append("Image Name: ");
+        sBuilder.append(c.getImageName());
+        sBuilder.append("\n");
+        sBuilder.append("Watermark: ");
+        sBuilder.append(c.getWatermark());
+        sBuilder.append("\n");
+        sBuilder.append("Border: ");
+        sBuilder.append(c.getBorder());
+        sBuilder.append("\n");
+        sBuilder.append("Time Shifted: ");
+        sBuilder.append(c.isTimeshifted());
+        sBuilder.append("\n");
+        sBuilder.append("Hand: ");
+        sBuilder.append(c.getHand());
+        sBuilder.append("\n");
+        sBuilder.append("Life: ");
+        sBuilder.append(c.getLife());
+        sBuilder.append("\n");
+        sBuilder.append("Reserved: ");
+        sBuilder.append(c.isReserved());
+        sBuilder.append("\n");
+        sBuilder.append("Release Date: ");
+        sBuilder.append(c.getReleaseDate());
+        sBuilder.append("\n");
+        sBuilder.append("Starter: ");
+        sBuilder.append(c.isStarter());
+        sBuilder.append("\n");
+        sBuilder.append("Set: ");
+        sBuilder.append(c.getSet());
+        sBuilder.append("\n");
+        sBuilder.append("Setname: ");
+        sBuilder.append(c.getSetName());
+        sBuilder.append("\n");
+        sBuilder.append("Printings: ");
+        sBuilder.append(c.getPrintings());
+        sBuilder.append("\n");
+        sBuilder.append("Image URL: ");
+        sBuilder.append(c.getImageUrl());
+        sBuilder.append("\n");
+        final String answerS = sBuilder.toString();
+        Platform.runLater(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                label.setText(answerS);
+            }
+        });
+
+    }
+
+    private void clearFieldData(TitledPane tp)
+    {
+        Pane pane = (Pane) tp.getContent();
+        Pane labelPane = (Pane) ((ScrollPane) pane.getChildren().get(1)).getContent();
+        Label label = (Label) labelPane.getChildren().get(0);
+        label.setText(DEFAULT_STRING);
+
+    }
+
+    class FillImages implements Runnable
+    {
 
         int begin;
 
-        public FillImages(int begin) {
+        public FillImages(int begin)
+        {
             this.begin = begin;
         }
 
         @Override
-        public void run() {
-            for (int i = begin; i <= (begin + 100); i++) {
+        public void run()
+        {
+            for (int i = begin; i <= (begin + 100); i++)
+            {
                 TitledPane tp = cardPanes.get(i);
                 // fill next image
-                Card c = (Card) tp.getUserData();
                 Pane pane = (Pane) tp.getContent();
                 Pane imagePane = (Pane) pane.getChildren().get(0);
                 ImageView imageView = (ImageView) imagePane.getChildren().get(0);
-
-                if (imageView.getImage() == null && c.getImageUrl() != null) {
+                fillFieldData(tp);
+                Card c = (Card) tp.getUserData();
+                if (imageView.getImage() == null && c.getImageUrl() != null)
+                {
                     imageView.setImage(new Image(c.getImageUrl()));
                 }
 
-                if (cardStartIndex != begin) {
+                if (cardStartIndex != begin)
+                {
                     break;
                 }
             }
-            
+
             // Wait for User to change page
-            while (cardStartIndex == begin) {
-                try {
+            while (cardStartIndex == begin)
+            {
+                try
+                {
                     Thread.sleep(100);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException e)
+                {
                 }
             }
             // destruct images in thread
-            for (int i = begin; i <= (begin + 100); i++) {
+            for (int i = begin; i <= (begin + 100); i++)
+            {
                 // empty all images
                 TitledPane tp = cardPanes.get(i);
                 Pane pane = (Pane) tp.getContent();
                 Pane imagePane = (Pane) pane.getChildren().get(0);
                 ImageView imageView = (ImageView) imagePane.getChildren().get(0);
-
-                if (imageView.getImage() != null) {
+                clearFieldData(tp);
+                if (imageView.getImage() != null)
+                {
                     imageView.setImage(null);
                 }
-                
+
                 // Stop cleaning if User goes back to this page
-                if (cardStartIndex == begin) {
+                if (cardStartIndex == begin)
+                {
                     return;
                 }
             }
