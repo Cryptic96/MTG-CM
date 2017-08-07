@@ -7,6 +7,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
@@ -40,9 +41,10 @@
                <panes>
                   <TitledPane prefWidth="200.0">
                      <content>
-                        <Pane prefHeight="500.0">
+                        <Pane prefHeight="341.0">
                            <children>
                               <Pane layoutX="15.0" layoutY="15.0" prefHeight="311.0" prefWidth="226.0" style="-fx-border-color: #000;" />
+                              <Pane layoutX="256.0" layoutY="15.0" prefHeight="311.0" prefWidth="712.0" style="-fx-border-color: #000;" />
                            </children>
                         </Pane>
                      </content>
@@ -54,6 +56,10 @@
       <Button layoutX="15.0" layoutY="680.0" mnemonicParsing="false" onAction="#ButtonPreviousPage" prefHeight="25.0" prefWidth="150.0" text="Prefious Page" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" />
       <Label fx:id="lblPage" alignment="CENTER" layoutX="180.0" layoutY="680.0" prefHeight="25.0" prefWidth="100.0" text="1 - 100" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="180.0" />
       <Button layoutX="295.0" layoutY="680.0" mnemonicParsing="false" onAction="#ButtonNextPage" prefHeight="25.0" prefWidth="150.0" text="Next Page" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="295.0" />
-      <Pane layoutX="1030.0" layoutY="40.0" prefHeight="400.0" prefWidth="235.0" style="-fx-border-color: #000;" AnchorPane.bottomAnchor="280.0" AnchorPane.leftAnchor="1030.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="40.0" />
+      <Pane layoutX="1030.0" layoutY="40.0" prefHeight="400.0" prefWidth="235.0" style="-fx-border-color: #000;" AnchorPane.bottomAnchor="280.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="40.0">
+         <children>
+            <Label layoutX="15.0" prefHeight="25.0" prefWidth="205.0" text="Filter options:" />
+            <TextField fx:id="tfSearchBar" layoutX="15.0" layoutY="25.0" onAction="#SearchFieldActionEvent" prefHeight="25.0" prefWidth="205.0" promptText="Search:" />
+         </children></Pane>
    </children>
 </AnchorPane>
