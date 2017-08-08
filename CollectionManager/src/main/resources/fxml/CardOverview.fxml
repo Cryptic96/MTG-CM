@@ -44,7 +44,7 @@
                         <Pane prefHeight="341.0">
                            <children>
                               <Pane layoutX="15.0" layoutY="15.0" prefHeight="311.0" prefWidth="226.0" style="-fx-border-color: #000;" />
-                              <Pane layoutX="256.0" layoutY="15.0" prefHeight="311.0" prefWidth="712.0" style="-fx-border-color: #000;" />
+                              <Pane layoutX="256.0" layoutY="15.0" prefHeight="311.0" prefWidth="710.0" style="-fx-border-color: #000;" />
                            </children>
                         </Pane>
                      </content>

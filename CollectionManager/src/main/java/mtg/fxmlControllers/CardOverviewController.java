@@ -288,17 +288,12 @@ public class CardOverviewController implements Initializable, IController
         // imageview
         ImageView imageView = createImageView();
         imagePane.getChildren().add(imageView);
-
-        // panel for labels for the card fields
-        //final ScrollPane labelScrollPane = createScrollPane();
-        // put table in scrollpane
-        // make observable list to add data
-        final TableView<CardProperty> table = new TableView();
-        table.setTranslateX(260);
-        table.setTranslateY(8);
-        table.setPrefHeight(328);
-
+        
+        // tableview
+        final TableView<CardProperty> table = createTableView();
         pane.getChildren().add(table);
+        
+        // make observable list to add data to tableview
         final TableColumn valueCol = new TableColumn("Value");
         pane.widthProperty().addListener(new ChangeListener<Number>()
         {
@@ -306,7 +301,7 @@ public class CardOverviewController implements Initializable, IController
             public void changed(ObservableValue<? extends Number> observable,
                     Number oldValue, Number newValue)
             {
-                table.setPrefWidth(pane.getWidth() - 270);
+                table.setPrefWidth(pane.getWidth() - 265);
                 //valueCol.setPrefWidth(table.getWidth() - propertyCol.getWidth() - 20);
             }
         });
@@ -333,7 +328,8 @@ public class CardOverviewController implements Initializable, IController
     private Pane createImagePane()
     {
         Pane imagePane = new Pane();
-        imagePane.setPrefSize(226, 311);
+        imagePane.setPrefWidth(220);
+        imagePane.setPrefHeight(310);
         imagePane.setLayoutX(15);
         imagePane.setLayoutY(15);
         imagePane.setStyle("-fx-border-color: #000");
@@ -343,21 +339,20 @@ public class CardOverviewController implements Initializable, IController
     private ImageView createImageView()
     {
         ImageView imageview = new ImageView();
-        imageview.setFitWidth(226);
-        imageview.setFitHeight(311);
+        imageview.setFitWidth(220);
+        imageview.setFitHeight(310);
         imageview.setLayoutX(0);
         imageview.setLayoutY(0);
         return imageview;
     }
-
-    private ScrollPane createScrollPane()
-    {
-        final ScrollPane labelScrollPane = new ScrollPane();
-        labelScrollPane.setPrefSize(600, 311);
-        labelScrollPane.setLayoutX(256);
-        labelScrollPane.setLayoutY(15);
-        labelScrollPane.setStyle("-fx-border-color: #000");
-        return labelScrollPane;
+    
+    private TableView<CardProperty> createTableView(){
+        final TableView<CardProperty> table = new TableView();
+        table.setPrefHeight(310);
+        table.setTranslateX(250);
+        table.setTranslateY(15);
+        table.setStyle("-fx-border-color: #000");
+        return table;
     }
     // </editor-fold>
 
