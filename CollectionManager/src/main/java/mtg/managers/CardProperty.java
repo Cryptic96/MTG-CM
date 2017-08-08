@@ -7,6 +7,7 @@ package mtg.managers;
 
 import io.magicthegathering.javasdk.resource.Card;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.text.Text;
 import mtg.enums.E_PropertyName;
 
 /**
@@ -30,9 +31,12 @@ public class CardProperty
         return propName.getName();
     }
 
-    public String getPropValue()
+    public Text getPropValue()
     {
-        return propValue.get();
+        Text t = new Text(propValue.get());
+
+        t.setWrappingWidth(496);
+        return t;
     }
 
     public void setPropName(E_PropertyName propName)

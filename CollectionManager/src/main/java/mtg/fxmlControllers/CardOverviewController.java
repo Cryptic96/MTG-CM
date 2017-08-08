@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -24,6 +25,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
@@ -31,6 +33,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.util.Callback;
 import mtg.enums.E_PropertyName;
 import mtg.managers.CardManager;
 import mtg.managers.CardProperty;
@@ -45,7 +48,7 @@ public class CardOverviewController implements Initializable, IController
     private List<TitledPane> filterCardPanes;
     private List<TitledPane> CurrentlyShownCardPanes;
     private Image defaultImage;
-    TableColumn propertyCol = new TableColumn("Property");
+    private final TableColumn propertyCol = new TableColumn("Property");
     private static final String DEFAULT_STRING = "No Data yet";
 
     // <editor-fold defaultstate="collapsed" desc="FXML Items">
@@ -295,13 +298,15 @@ public class CardOverviewController implements Initializable, IController
         table.setPrefHeight(328);
 
         pane.getChildren().add(table);
+        final TableColumn valueCol = new TableColumn("Value");
         pane.widthProperty().addListener(new ChangeListener<Number>()
         {
             @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
+            public void changed(ObservableValue<? extends Number> observable,
+                    Number oldValue, Number newValue)
             {
                 table.setPrefWidth(pane.getWidth() - 270);
-                pane.getWidth();
+                //valueCol.setPrefWidth(table.getWidth() - propertyCol.getWidth() - 20);
             }
         });
 
@@ -313,10 +318,8 @@ public class CardOverviewController implements Initializable, IController
         final ObservableList<CardProperty> data
                 = FXCollections.observableArrayList(templist);
 
-        //labelScrollPane.setContent(table);
-        //TableColumn propertyCol = new TableColumn("Property");
-        TableColumn valueCol = new TableColumn("Value");
-        valueCol.setMinWidth(100);
+        valueCol.setMinWidth(500);
+
         valueCol.setCellValueFactory(
                 new PropertyValueFactory<CardProperty, String>("propValue"));
 
@@ -390,8 +393,6 @@ public class CardOverviewController implements Initializable, IController
     private void fillFieldData(TitledPane tp)
     {
         Pane pane = (Pane) tp.getContent();
-        // Pane labelPane = (Pane) ((ScrollPane) pane.getChildren().get(1)).getContent();
-        //final Label label = (Label) labelPane.getChildren().get(0);
 
         final TableView table = ((TableView) pane.getChildren().get(1));
 
@@ -405,15 +406,6 @@ public class CardOverviewController implements Initializable, IController
         final ObservableList<CardProperty> data
                 = FXCollections.observableArrayList(templist);
 
-        //labelScrollPane.setContent(table);
-//        propertyCol.setMinWidth(100);
-//        propertyCol.setCellValueFactory(
-//                new PropertyValueFactory<CardProperty, String>("propName"));
-//        TableColumn valueCol = new TableColumn("Value");
-//        valueCol.setMinWidth(100);
-//        valueCol.setCellValueFactory(
-//                new PropertyValueFactory<CardProperty, String>("propValue"));
-
         Platform.runLater(new Runnable()
         {
             @Override
@@ -422,7 +414,7 @@ public class CardOverviewController implements Initializable, IController
                 table.setItems(data);
             }
         });
-        
+
     }
 
     private void clearFieldData(TitledPane tp)
