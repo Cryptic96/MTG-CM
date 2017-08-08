@@ -37,6 +37,7 @@ import javafx.util.Callback;
 import mtg.enums.E_PropertyName;
 import mtg.managers.CardManager;
 import mtg.managers.CardProperty;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class CardOverviewController implements Initializable, IController
 {
@@ -419,11 +420,10 @@ public class CardOverviewController implements Initializable, IController
 
     private void clearFieldData(TitledPane tp)
     {
-        Pane pane = (Pane) tp.getContent();
-        Pane labelPane = (Pane) ((ScrollPane) pane.getChildren().get(1)).getContent();
-        Label label = (Label) labelPane.getChildren().get(0);
-        label.setText(DEFAULT_STRING);
-
+//        Pane pane = (Pane) tp.getContent();
+//        Pane labelPane = (Pane) ((ScrollPane) pane.getChildren().get(1)).getContent();
+//        Label label = (Label) labelPane.getChildren().get(0);
+//        label.setText(DEFAULT_STRING);
     }
     // </editor-fold>
 
