@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mtg.fxmlControllers;
+package mtg.fxmlControllers.viewTypes;
 
 import java.util.List;
 import javafx.scene.Node;
@@ -31,7 +31,7 @@ public interface ICardOverview {
 
     public List<?> getCurrentlyShownCardPanes();
 
-    public void setCurrentlyShownCardPanes(List<?> CurrentlyShownCardPanes);
+    public void setCurrentlyShownCardPanes(List<?> currentlyShownCardPanes);
 
     public Node CardUIConverter();
 

@@ -1,4 +1,4 @@
-package mtg.fxmlControllers;
+package mtg.fxmlControllers.viewTypes;
 
 import io.magicthegathering.javasdk.resource.Card;
 import java.util.ArrayList;
@@ -12,10 +12,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Accordion;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -27,17 +25,17 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
 
     private List<TitledPane> allCardPanes;
     private List<TitledPane> filterCardPanes;
-    private List<TitledPane> CurrentlyShownCardPanes;
+    private List<TitledPane> currentlyShownCardPanes;
 
     // <editor-fold defaultstate="collapsed" desc="FXML Items">
-    // Card View
-    private Accordion accordionCards;
+    // Card View, this is the main Node for this view type
+    private Accordion mainViewTypeNode;
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
     @Override
     public List<TitledPane> getAllCardPanes() {
-        return (List<TitledPane>) allCardPanes;
+        return (List<TitledPane>) this.allCardPanes;
     }
 
     @Override
@@ -47,7 +45,7 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
 
     @Override
     public List<TitledPane> getFilterCardPanes() {
-        return (List<TitledPane>) filterCardPanes;
+        return (List<TitledPane>) this.filterCardPanes;
     }
 
     @Override
@@ -57,12 +55,12 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
 
     @Override
     public List<TitledPane> getCurrentlyShownCardPanes() {
-        return (List<TitledPane>) CurrentlyShownCardPanes;
+        return (List<TitledPane>) this.currentlyShownCardPanes;
     }
 
     @Override
-    public void setCurrentlyShownCardPanes(List<?> CurrentlyShownCardPanes) {
-        this.CurrentlyShownCardPanes = (List<TitledPane>) CurrentlyShownCardPanes;
+    public void setCurrentlyShownCardPanes(List<?> currentlyShownCardPanes) {
+        this.currentlyShownCardPanes = (List<TitledPane>) currentlyShownCardPanes;
     }
     // </editor-fold>
 
@@ -70,12 +68,12 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
         super(threadPool, cardManager, nodes);
         this.allCardPanes = new ArrayList<>();
         this.filterCardPanes = new ArrayList<>();
-        this.CurrentlyShownCardPanes = new ArrayList<>();
+        this.currentlyShownCardPanes = new ArrayList<>();
     }
 
     @Override
     public Node CardUIConverter() {
-        this.accordionCards = new Accordion();
+        this.mainViewTypeNode = new Accordion();
         for (Card c : cardManager.getCards()) {
             final TitledPane tp = new TitledPane();
             tp.setUserData(c);
@@ -101,7 +99,7 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
             });
             allCardPanes.add(tp);
         }
-        return this.accordionCards;
+        return this.mainViewTypeNode;
     }
 
     @Override
@@ -142,16 +140,16 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
         System.out.println("Refreshing Page");
         try {
             int amount = 0;
-            this.CurrentlyShownCardPanes.clear();
-            accordionCards.getPanes().clear();
+            this.currentlyShownCardPanes.clear();
+            mainViewTypeNode.getPanes().clear();
 
             for (int i = beginIndex; i < (beginIndex + 100); i++) {
                 if (cardPanes.size() < (i + 1)) {
                     break;
                 }
                 TitledPane tp = (TitledPane) cardPanes.get(i);
-                this.CurrentlyShownCardPanes.add(tp);
-                accordionCards.getPanes().add(tp);
+                this.currentlyShownCardPanes.add(tp);
+                mainViewTypeNode.getPanes().add(tp);
                 amount = i - beginIndex;
             }
 
@@ -160,7 +158,7 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
                     + (cardStartIndex + amount + 1));
 
             // Thread image loading shizzle
-            List<TitledPane> tempList = new ArrayList(this.CurrentlyShownCardPanes);
+            List<TitledPane> tempList = new ArrayList(this.currentlyShownCardPanes);
             FillImages fillImages = new FillImages(tempList);
             EmptyImages emptyImages = new EmptyImages(tempList);
 
@@ -242,7 +240,7 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
         @Override
         public void run() {
             // Wait for User to change page
-            while (this.tempCardPanes.containsAll(CurrentlyShownCardPanes)) {
+            while (this.tempCardPanes.containsAll(currentlyShownCardPanes)) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -251,7 +249,7 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
 
             // destruct images in thread
             for (TitledPane tp : this.tempCardPanes) {
-                if (CurrentlyShownCardPanes.contains(tp)) {
+                if (currentlyShownCardPanes.contains(tp)) {
                     continue;
                 }
                 // empty all images

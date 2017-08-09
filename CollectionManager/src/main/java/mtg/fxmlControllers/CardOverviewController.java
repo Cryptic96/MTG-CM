@@ -1,5 +1,7 @@
 package mtg.fxmlControllers;
 
+import mtg.fxmlControllers.viewTypes.ICardOverview;
+import mtg.fxmlControllers.viewTypes.CardOverviewList;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;

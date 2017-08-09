@@ -1,4 +1,4 @@
-package mtg.fxmlControllers;
+package mtg.fxmlControllers.viewTypes;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
