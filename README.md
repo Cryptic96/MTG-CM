@@ -9,6 +9,7 @@ Note that API use is free and does not require authentication or registration, b
 Prerequisites
 -------
 - Java JDK 7 or higher
+- Java JRE 7 or higher (not yet tested)
 
 Requirements
 -------
