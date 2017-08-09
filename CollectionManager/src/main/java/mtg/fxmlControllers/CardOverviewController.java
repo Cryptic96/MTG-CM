@@ -16,6 +16,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import mtg.fxmlControllers.viewTypes.CardOverviewGrid;
 import mtg.managers.CardManager;
 
 public class CardOverviewController implements Initializable, IController {
@@ -63,7 +64,8 @@ public class CardOverviewController implements Initializable, IController {
         
         // Check radiobuttons for view mode
         // TODO: create if-statement for radiobuttons
-        this.viewMode = new CardOverviewList(threadPool, cardManager, nodes);
+        //this.viewMode = new CardOverviewList(threadPool, cardManager, nodes);
+        this.viewMode = new CardOverviewGrid(threadPool, cardManager, nodes);
         
         // fill cards at the beginning
         cardManager.ReadAllCardsFromFile();

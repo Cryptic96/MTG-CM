@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane id="AnchorPane" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mtg.fxmlControllers.CardOverviewController">
+<AnchorPane id="AnchorPane" minHeight="720.0" minWidth="1280.0" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mtg.fxmlControllers.CardOverviewController">
    <children>
       <MenuBar prefHeight="25.0" prefWidth="1280.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
@@ -45,8 +45,8 @@
         </menus>
       </MenuBar>
       <ScrollPane fx:id="cardOverviewPane" fitToWidth="true" hbarPolicy="NEVER" layoutX="15.0" layoutY="40.0" prefHeight="625.0" prefWidth="1000.0" style="-fx-border-color: #000;" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="265.0" AnchorPane.topAnchor="40.0" />
-      <Button layoutX="15.0" layoutY="680.0" mnemonicParsing="false" onAction="#ButtonPreviousPage" prefHeight="25.0" prefWidth="150.0" text="Prefious Page" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" />
-      <Label fx:id="lblPage" alignment="CENTER" layoutX="180.0" layoutY="680.0" prefHeight="25.0" prefWidth="100.0" text="1 - 100" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="180.0" />
+      <Button layoutX="15.0" layoutY="680.0" mnemonicParsing="false" onAction="#ButtonPreviousPage" prefHeight="25.0" prefWidth="150.0" text="Previous Page" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" />
+      <Label fx:id="lblPage" alignment="CENTER" layoutX="180.0" layoutY="680.0" prefHeight="25.0" prefWidth="100.0" text="1 - (...)" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="180.0" />
       <Button layoutX="295.0" layoutY="680.0" mnemonicParsing="false" onAction="#ButtonNextPage" prefHeight="25.0" prefWidth="150.0" text="Next Page" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="295.0" />
       <Pane layoutX="1030.0" layoutY="40.0" prefHeight="400.0" prefWidth="235.0" style="-fx-border-color: #000;" AnchorPane.bottomAnchor="280.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="40.0">
          <children>

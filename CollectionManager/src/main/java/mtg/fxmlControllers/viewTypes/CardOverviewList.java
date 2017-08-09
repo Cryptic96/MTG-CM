@@ -73,12 +73,13 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
 
     @Override
     public Node CardUIConverter() {
+        System.out.println("Creating GUI Nodes for every card");
         this.mainViewTypeNode = new Accordion();
         for (Card c : cardManager.getCards()) {
             final TitledPane tp = new TitledPane();
             tp.setUserData(c);
             tp.setText(c.getName());
-            tp.setContent((Pane) addCardComponents());
+            addCardComponents(tp);
             tp.heightProperty().addListener(new ChangeListener<Number>() {
                 @Override
                 public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -97,22 +98,13 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
                     }
                 }
             });
-            allCardPanes.add(tp);
+            this.allCardPanes.add(tp);
         }
         return this.mainViewTypeNode;
     }
 
     @Override
-    public void filterCards(String filter) {
-        for (TitledPane tp : this.allCardPanes) {
-            if (tp.getText().toUpperCase().contains(filter.toUpperCase())) {
-                this.filterCardPanes.add(tp);
-            }
-        }
-    }
-
-    @Override
-    public Node addCardComponents() {
+    public void addCardComponents(Node node) {
         final Pane pane = new Pane();
         pane.setPrefHeight(340);
         pane.setStyle("-fx-border-color: #000; -fx-background-color: #d3d3d3");
@@ -132,9 +124,18 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
             }
         });
         pane.getChildren().add(tableView);
-        return pane;
+        ((TitledPane)node).setContent(pane);
     }
 
+    @Override
+    public void filterCards(String filter) {
+        for (TitledPane tp : this.allCardPanes) {
+            if (tp.getText().toUpperCase().contains(filter.toUpperCase())) {
+                this.filterCardPanes.add(tp);
+            }
+        }
+    }
+    
     @Override
     public void refreshCardPages(int beginIndex, List<?> cardPanes) {
         System.out.println("Refreshing Page");
@@ -149,7 +150,7 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
                 }
                 TitledPane tp = (TitledPane) cardPanes.get(i);
                 this.currentlyShownCardPanes.add(tp);
-                mainViewTypeNode.getPanes().add(tp);
+                this.mainViewTypeNode.getPanes().add(tp);
                 amount = i - beginIndex;
             }
 

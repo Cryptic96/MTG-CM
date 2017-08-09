@@ -35,7 +35,7 @@ public interface ICardOverview {
 
     public Node CardUIConverter();
 
-    public Node addCardComponents();
+    public void addCardComponents(Node node);
     
     public void filterCards(String filter);
 

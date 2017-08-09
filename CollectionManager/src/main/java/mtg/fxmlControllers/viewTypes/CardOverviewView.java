@@ -65,15 +65,15 @@ public abstract class CardOverviewView {
     
     protected Pane createImagePane(int w, int h, int x, int y) {
         Pane imagePane = new Pane();
-        imagePane.setPrefWidth(220);
-        imagePane.setPrefHeight(310);
-        imagePane.setLayoutX(15);
-        imagePane.setLayoutY(15);
+        imagePane.setPrefWidth(w);
+        imagePane.setPrefHeight(h);
+        imagePane.setLayoutX(x);
+        imagePane.setLayoutY(y);
         imagePane.setStyle("-fx-border-color: #000");
 
         ImageView imageView = new ImageView();
-        imageView.setFitWidth(220);
-        imageView.setFitHeight(310);
+        imageView.setFitWidth(w);
+        imageView.setFitHeight(h);
         imageView.setLayoutX(0);
         imageView.setLayoutY(0);
         imagePane.getChildren().add(imageView);
@@ -83,9 +83,9 @@ public abstract class CardOverviewView {
 
     protected TableView<CardProperty> createTableView(int h, int x, int y) {
         TableView<CardProperty> table = new TableView();
-        table.setPrefHeight(310);
-        table.setTranslateX(250);
-        table.setTranslateY(15);
+        table.setPrefHeight(h);
+        table.setTranslateX(x);
+        table.setTranslateY(y);
         table.setStyle("-fx-border-color: #000");
 
         // make observable list to add data to tableview
