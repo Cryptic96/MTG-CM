@@ -28,7 +28,6 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
     private List<TitledPane> allCardPanes;
     private List<TitledPane> filterCardPanes;
     private List<TitledPane> CurrentlyShownCardPanes;
-    private final TableColumn propertyCol = new TableColumn("Property");
 
     // <editor-fold defaultstate="collapsed" desc="FXML Items">
     // Card View
@@ -72,11 +71,8 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
         this.allCardPanes = new ArrayList<>();
         this.filterCardPanes = new ArrayList<>();
         this.CurrentlyShownCardPanes = new ArrayList<>();
-        this.propertyCol.setMinWidth(100);
-        this.propertyCol.setCellValueFactory(
-                new PropertyValueFactory<>("propName"));
     }
-    
+
     @Override
     public Node CardUIConverter() {
         this.accordionCards = new Accordion();
@@ -109,74 +105,37 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
     }
 
     @Override
-    public void filterCards(String filter){
+    public void filterCards(String filter) {
         for (TitledPane tp : this.allCardPanes) {
             if (tp.getText().toUpperCase().contains(filter.toUpperCase())) {
                 this.filterCardPanes.add(tp);
             }
         }
     }
-    
-    // <editor-fold defaultstate="collapsed" desc="Card Components">
+
     @Override
     public Node addCardComponents() {
         final Pane pane = new Pane();
-        pane.setPrefHeight(341);
+        pane.setPrefHeight(340);
         pane.setStyle("-fx-border-color: #000; -fx-background-color: #d3d3d3");
 
-        // image pane
-        Pane imagePane = new Pane();
-        imagePane.setPrefWidth(220);
-        imagePane.setPrefHeight(310);
-        imagePane.setLayoutX(15);
-        imagePane.setLayoutY(15);
-        imagePane.setStyle("-fx-border-color: #000");
+        // image
+        Pane imagePane = createImagePane(220, 310, 15, 15);
         pane.getChildren().add(imagePane);
 
-        // imageview
-        ImageView imageView = new ImageView();
-        imageView.setFitWidth(220);
-        imageView.setFitHeight(310);
-        imageView.setLayoutX(0);
-        imageView.setLayoutY(0);
-        imagePane.getChildren().add(imageView);
-
         // tableview
-        final TableView<CardProperty> table = new TableView();
-        table.setPrefHeight(310);
-        table.setTranslateX(250);
-        table.setTranslateY(15);
-        table.setStyle("-fx-border-color: #000");
-        pane.getChildren().add(table);
-
-        // make observable list to add data to tableview
-        final TableColumn valueCol = new TableColumn("Value");
+        final TableView<CardProperty> tableView = createTableView(310, 250, 15);
         pane.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable,
                     Number oldValue, Number newValue) {
-                table.setPrefWidth(pane.getWidth() - 265);
+                tableView.setPrefWidth(pane.getWidth() - 265);
                 //valueCol.setPrefWidth(table.getWidth() - propertyCol.getWidth() - 20);
             }
         });
-
-        Collection<CardProperty> templist = new ArrayList();
-        for (E_PropertyName p : E_PropertyName.values()) {
-            templist.add(new CardProperty(p, null));
-        }
-        final ObservableList<CardProperty> data
-                = FXCollections.observableArrayList(templist);
-
-        valueCol.setMinWidth(500);
-
-        valueCol.setCellValueFactory(new PropertyValueFactory<>("propValue"));
-
-        table.setItems(data);
-        table.getColumns().addAll(propertyCol, valueCol);
-
+        pane.getChildren().add(tableView);
         return pane;
     }
-    // </editor-fold>
 
     @Override
     public void refreshCardPages(int beginIndex, List<?> cardPanes) {
@@ -199,7 +158,7 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
             // Set page label information
             lblPage.setText((cardStartIndex + 1) + " - "
                     + (cardStartIndex + amount + 1));
-            
+
             // Thread image loading shizzle
             List<TitledPane> tempList = new ArrayList(this.CurrentlyShownCardPanes);
             FillImages fillImages = new FillImages(tempList);
