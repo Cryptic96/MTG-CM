@@ -135,7 +135,7 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
     @Override
     public void filterCards(String filter) {
         for (TitledPane tp : this.allCardPanes) {
-            if (tp.getText().toUpperCase().contains(filter.toUpperCase())) {
+            if (getTotalText(tp).toUpperCase().contains(filter.toUpperCase())) {
                 this.filterCardPanes.add(tp);
             }
         }
@@ -256,7 +256,7 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
                 if (!this.tempCardPanes.contains(tp)) {
                     break;
                 }
-                
+
                 Pane pane = (Pane) tp.getContent();
 
                 final TableView table = ((TableView) pane.getChildren().get(1));
