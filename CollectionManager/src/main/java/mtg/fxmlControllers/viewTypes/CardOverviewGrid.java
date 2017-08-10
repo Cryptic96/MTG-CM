@@ -169,18 +169,6 @@ public class CardOverviewGrid extends CardOverviewView implements ICardOverview 
             System.err.println(e);
         }
     }
-
-    // <editor-fold defaultstate="collapsed" desc="Field Data Updates">
-    @Override
-    public void fillFieldData(Node node) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void clearFieldData(Node node) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="Runnable Classes">
     class FillImages implements Runnable {

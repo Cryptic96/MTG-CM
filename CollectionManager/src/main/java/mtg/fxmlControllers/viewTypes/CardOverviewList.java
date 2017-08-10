@@ -83,19 +83,24 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
             tp.heightProperty().addListener(new ChangeListener<Number>() {
                 @Override
                 public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                    Card c = (Card) tp.getUserData();
-                    Pane pane = (Pane) tp.getContent();
-                    Pane imagePane = (Pane) pane.getChildren().get(0);
-                    ImageView imageView = (ImageView) imagePane.getChildren().get(0);
+                    Runnable run = new Runnable() {
+                        @Override
+                        public void run() {
+                            Card c = (Card) tp.getUserData();
+                            Pane pane = (Pane) tp.getContent();
+                            Pane imagePane = (Pane) pane.getChildren().get(0);
+                            ImageView imageView = (ImageView) imagePane.getChildren().get(0);
 
-                    if (imageView.getImage() == null && tp.getHeight() > 50) {
-                        fillFieldData(tp);
-                        if (c.getImageUrl() == null) {
-                            imageView.setImage(defaultImage);
-                        } else {
-                            imageView.setImage(new Image(c.getImageUrl()));
+                            if (imageView.getImage() == null && tp.getHeight() > 50) {
+                                if (c.getImageUrl() == null) {
+                                    imageView.setImage(defaultImage);
+                                } else {
+                                    imageView.setImage(new Image(c.getImageUrl()));
+                                }
+                            }
                         }
-                    }
+                    };
+                    threadPool.execute(run);
                 }
             });
             this.allCardPanes.add(tp);
@@ -124,7 +129,7 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
             }
         });
         pane.getChildren().add(tableView);
-        ((TitledPane)node).setContent(pane);
+        ((TitledPane) node).setContent(pane);
     }
 
     @Override
@@ -135,7 +140,7 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
             }
         }
     }
-    
+
     @Override
     public void refreshCardPages(int beginIndex, List<?> cardPanes) {
         System.out.println("Refreshing Page");
@@ -158,48 +163,22 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
             lblPage.setText((cardStartIndex + 1) + " - "
                     + (cardStartIndex + amount + 1));
 
-            // Thread image loading shizzle
             List<TitledPane> tempList = new ArrayList(this.currentlyShownCardPanes);
+
+            // Thread image loading
             FillImages fillImages = new FillImages(tempList);
             EmptyImages emptyImages = new EmptyImages(tempList);
 
+            // Thread table data loading
+            FillFieldData fillFieldData = new FillFieldData(tempList);
+
             threadPool.execute(fillImages);
             threadPool.execute(emptyImages);
+            threadPool.execute(fillFieldData);
         } catch (Exception e) {
             System.err.println(e);
         }
     }
-
-    // <editor-fold defaultstate="collapsed" desc="Field Data Updates">
-    @Override
-    public void fillFieldData(Node node) {
-        TitledPane tp = (TitledPane) node;
-        Pane pane = (Pane) tp.getContent();
-
-        final TableView table = ((TableView) pane.getChildren().get(1));
-
-        Card c = (Card) tp.getUserData();
-
-        Collection<CardProperty> templist = new ArrayList();
-        for (E_PropertyName p : E_PropertyName.values()) {
-            templist.add(CardProperty.getCardProperty(c, p));
-        }
-        final ObservableList<CardProperty> data
-                = FXCollections.observableArrayList(templist);
-
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                table.setItems(data);
-            }
-        });
-    }
-
-    @Override
-    public void clearFieldData(Node node) {
-
-    }
-    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Runnable Classes">
     class FillImages implements Runnable {
@@ -221,7 +200,6 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
                 Pane pane = (Pane) tp.getContent();
                 Pane imagePane = (Pane) pane.getChildren().get(0);
                 ImageView imageView = (ImageView) imagePane.getChildren().get(0);
-                fillFieldData(tp);
                 Card c = (Card) tp.getUserData();
                 if (imageView.getImage() == null && c.getImageUrl() != null) {
                     imageView.setImage(new Image(c.getImageUrl()));
@@ -232,7 +210,7 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
 
     class EmptyImages implements Runnable {
 
-        List<TitledPane> tempCardPanes;
+        final List<TitledPane> tempCardPanes;
 
         public EmptyImages(List<TitledPane> tempCardPanes) {
             this.tempCardPanes = tempCardPanes;
@@ -257,10 +235,47 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
                 Pane pane = (Pane) tp.getContent();
                 Pane imagePane = (Pane) pane.getChildren().get(0);
                 ImageView imageView = (ImageView) imagePane.getChildren().get(0);
-                clearFieldData(tp);
                 if (imageView.getImage() != null) {
                     imageView.setImage(null);
                 }
+            }
+        }
+    }
+
+    class FillFieldData implements Runnable {
+
+        final List<TitledPane> tempCardPanes;
+
+        public FillFieldData(List<TitledPane> tempCardPanes) {
+            this.tempCardPanes = tempCardPanes;
+        }
+
+        @Override
+        public void run() {
+            for (TitledPane tp : this.tempCardPanes) {
+                if (!this.tempCardPanes.contains(tp)) {
+                    break;
+                }
+                
+                Pane pane = (Pane) tp.getContent();
+
+                final TableView table = ((TableView) pane.getChildren().get(1));
+
+                Card c = (Card) tp.getUserData();
+
+                Collection<CardProperty> templist = new ArrayList();
+                for (E_PropertyName p : E_PropertyName.values()) {
+                    templist.add(CardProperty.getCardProperty(c, p));
+                }
+                final ObservableList<CardProperty> data
+                        = FXCollections.observableArrayList(templist);
+
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        table.setItems(data);
+                    }
+                });
             }
         }
     }

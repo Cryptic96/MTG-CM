@@ -40,8 +40,4 @@ public interface ICardOverview {
     public void filterCards(String filter);
 
     public void refreshCardPages(int beginIndex, List<?> cardPanes);
-
-    public void fillFieldData(Node node);
-
-    public void clearFieldData(Node node);
 }
