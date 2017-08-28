@@ -149,13 +149,6 @@ public abstract class CardOverviewView {
         sb.append(c.getSet());
         sb.append("\n");
         sb.append(c.getSetName());
-        try {
-            for (String s : c.getPrintings()) {
-                sb.append("\n");
-                sb.append(s);
-            }
-        } catch (Exception e) {
-        }
 
         return sb.toString();
     }

@@ -64,6 +64,8 @@ public class CardOverviewController implements Initializable, IController {
         
         // Check radiobuttons for view mode
         // TODO: create if-statement for radiobuttons
+        
+        
         this.viewMode = new CardOverviewList(threadPool, cardManager, nodes);
 //        this.viewMode = new CardOverviewGrid(threadPool, cardManager, nodes);
         
