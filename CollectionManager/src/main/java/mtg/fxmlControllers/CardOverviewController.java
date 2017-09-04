@@ -66,8 +66,8 @@ public class CardOverviewController implements Initializable, IController {
         // TODO: create if-statement for radiobuttons
         
         
-        this.viewMode = new CardOverviewList(threadPool, cardManager, nodes);
-//        this.viewMode = new CardOverviewGrid(threadPool, cardManager, nodes);
+//        this.viewMode = new CardOverviewList(threadPool, cardManager, nodes);
+        this.viewMode = new CardOverviewGrid(threadPool, cardManager, nodes);
         
         // fill cards at the beginning
         cardManager.ReadAllCardsFromFile();
