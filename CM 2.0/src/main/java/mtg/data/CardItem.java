@@ -2,9 +2,7 @@ package mtg.data;
 
 import io.magicthegathering.javasdk.resource.Card;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
@@ -12,33 +10,38 @@ import javafx.scene.layout.Pane;
  *
  * @author theun
  */
-public class CardItem {
-    
+public class CardItem
+{
+
     private final Card card;
-    private Pane cardPane;
-    private Image cardImage;
-    
-    public Pane getCardPane(){
+    private final Pane cardPane;
+    private ImageView cardImage;
+
+    public Card getCard()
+    {
+        return card;
+    }
+
+    public Pane getCardPane()
+    {
         return cardPane;
     }
 
-    public CardItem(Card card) {
-        this.card = card;
-        CardUIConverter();
-    }
-    
-    private void CardUIConverter() {
-            cardPane = new Pane();
-            cardPane.setUserData(card);
-            addCardComponents(cardPane);
+    public ImageView getCardImage()
+    {
+        return cardImage;
     }
 
-    private void addCardComponents(Node node) {
-        Pane cardpane = (Pane) node;
-        Card c = (Card) cardpane.getUserData();
-        cardpane.setPrefWidth(220);
-        cardpane.setPrefHeight(335);
-        cardpane.setStyle("-fx-border-color: #000");
+    public CardItem(Card card)
+    {
+        this.card = card;
+        
+        // Creating UI Node
+        cardPane = new Pane();
+        cardPane.setUserData(card);
+        cardPane.setPrefWidth(220);
+        cardPane.setPrefHeight(335);
+        cardPane.setStyle("-fx-border-color: #000");
 
         // imagepane
         Pane imagePane = new Pane();
@@ -55,7 +58,7 @@ public class CardItem {
         imageView.setLayoutX(0);
         imageView.setLayoutY(0);
         imagePane.getChildren().add(imageView);
-        cardpane.getChildren().add(imagePane);
+        cardPane.getChildren().add(imagePane);
 
         // label
         Label label = new Label();
@@ -64,7 +67,7 @@ public class CardItem {
         label.setLayoutX(0);
         label.setLayoutY(310);
         label.setAlignment(Pos.CENTER);
-        label.setText(c.getName());
-        cardpane.getChildren().add(label);
+        label.setText(card.getName());
+        cardPane.getChildren().add(label);
     }
 }

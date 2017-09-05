@@ -1,5 +1,7 @@
 package mtg.managers;
 
+import db.dbmanager.IPersistence;
+import db.dbmanager.SQLITEPersistence;
 import io.magicthegathering.javasdk.api.CardAPI;
 import io.magicthegathering.javasdk.resource.Card;
 import java.io.File;
@@ -11,6 +13,7 @@ import java.io.ObjectOutputStream;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import mtg.magicthegatheringcm.Constants;
 import mtg.magicthegatheringcm.MainApp;
 
 public class CardManager
@@ -28,33 +31,26 @@ public class CardManager
 
     public CardManager()
     {
-        
+
     }
-    
+
     public void updateLocalDatabase()
     {
-        
+
         Runnable run = new Runnable()
         {
             @Override
             public void run()
             {
-                try
-                {
-                    System.out.println("Calling API for All Cards");
-                    cards = CardAPI.getAllCards();
-                    System.out.println("Done getting Cards");
-                    
-                    DatabaseManager db = new DatabaseManager();
-                    db.updateDatabase(cards);
-                }
-                catch (ClassNotFoundException | SQLException e)
-                {
-                    System.err.println(e);
-                }
+                System.out.println("Calling API for All Cards");
+                cards = CardAPI.getAllCards();
+                System.out.println("Done getting Cards");
+
+                IPersistence database = new SQLITEPersistence();
+                // TODO: update database
             }
         };
-        MainApp.getThreadpoolExecutorService().execute(run);
+        MainApp.getThreadpool().execute(run);
     }
 
     /**
@@ -82,7 +78,7 @@ public class CardManager
 
             }
         };
-        MainApp.getThreadpoolExecutorService().execute(run);
+        MainApp.getThreadpool().execute(run);
     }
 
     /**
@@ -111,7 +107,7 @@ public class CardManager
                 }
             }
         };
-        MainApp.getThreadpoolExecutorService().execute(run);
+        MainApp.getThreadpool().execute(run);
     }
 
     /**
@@ -147,6 +143,6 @@ public class CardManager
                 }
             }
         };
-        MainApp.getThreadpoolExecutorService().execute(run);
+        MainApp.getThreadpool().execute(run);
     }
 }
