@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane id="AnchorPane" minHeight="720.0" minWidth="1280.0" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mtg.fxmlControllers.CardOverviewController">
+   <children>
+      <MenuBar prefHeight="25.0" prefWidth="1280.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem fx:id="btnLoadFromAPI" mnemonicParsing="false" onAction="#ButtonLoadFromAPI" text="Reload from API" />
+                  <MenuItem fx:id="btnLoadFromFile" mnemonicParsing="false" onAction="#ButtonLoadFromFile" text="Reload from File" />
+                  <MenuItem fx:id="btnWriteToFile" mnemonicParsing="false" onAction="#ButtonWriteToFile" text="Write cards to File" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="View">
+               <items>
+                  <Menu mnemonicParsing="false" text="Mode">
+                     <items>
+                        <RadioMenuItem fx:id="RMIlist" mnemonicParsing="false" onAction="#RMIChangedSelected" selected="true" text="List">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="viewMode" />
+                           </toggleGroup></RadioMenuItem>
+                        <RadioMenuItem fx:id="RMIgrid" mnemonicParsing="false" onAction="#RMIChangedSelected" text="Grid" toggleGroup="$viewMode" />
+                     </items>
+                  </Menu>
+               </items>
+            </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Fuck You" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <ScrollPane fx:id="cardOverviewPane" fitToWidth="true" hbarPolicy="NEVER" layoutX="15.0" layoutY="40.0" prefHeight="625.0" prefWidth="1000.0" style="-fx-border-color: #000;" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="265.0" AnchorPane.topAnchor="40.0" />
+      <Button layoutX="15.0" layoutY="680.0" mnemonicParsing="false" onAction="#ButtonPreviousPage" prefHeight="25.0" prefWidth="150.0" text="Previous Page" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" />
+      <Label fx:id="lblPage" alignment="CENTER" layoutX="180.0" layoutY="680.0" prefHeight="25.0" prefWidth="100.0" text="1 - (...)" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="180.0" />
+      <Button layoutX="295.0" layoutY="680.0" mnemonicParsing="false" onAction="#ButtonNextPage" prefHeight="25.0" prefWidth="150.0" text="Next Page" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="295.0" />
+      <Pane layoutX="1030.0" layoutY="40.0" prefHeight="400.0" prefWidth="235.0" style="-fx-border-color: #000;" AnchorPane.bottomAnchor="280.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="40.0">
+         <children>
+            <Label layoutX="15.0" prefHeight="25.0" prefWidth="205.0" text="Filter options:" />
+            <TextField fx:id="tfSearchBar" layoutX="15.0" layoutY="25.0" onAction="#SearchFieldActionEvent" prefHeight="25.0" prefWidth="205.0" promptText="Search:" />
+         </children></Pane>
+   </children>
+</AnchorPane>

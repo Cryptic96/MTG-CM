@@ -1,0 +1,13 @@
+/home/theun/Documents/git/MTG-CM/CollectionManager/src/main/java/mtg/main/CollectionManager.java
+/home/theun/Documents/git/MTG-CM/CollectionManager/src/main/java/mtg/managers/CardManager.java
+/home/theun/Documents/git/MTG-CM/CollectionManager/src/main/java/mtg/database/DBStatements.java
+/home/theun/Documents/git/MTG-CM/CollectionManager/src/main/java/mtg/fxmlControllers/viewTypes/CardOverviewList.java
+/home/theun/Documents/git/MTG-CM/CollectionManager/src/main/java/mtg/fxmlControllers/viewTypes/CardOverviewView.java
+/home/theun/Documents/git/MTG-CM/CollectionManager/src/main/java/mtg/database/CardUpdater.java
+/home/theun/Documents/git/MTG-CM/CollectionManager/src/main/java/mtg/fxmlControllers/viewTypes/ICardOverview.java
+/home/theun/Documents/git/MTG-CM/CollectionManager/src/main/java/mtg/fxmlControllers/viewTypes/CardOverviewGrid.java
+/home/theun/Documents/git/MTG-CM/CollectionManager/src/main/java/mtg/managers/CardProperty.java
+/home/theun/Documents/git/MTG-CM/CollectionManager/src/main/java/mtg/fxmlControllers/IController.java
+/home/theun/Documents/git/MTG-CM/CollectionManager/src/main/java/mtg/database/DBConnection.java
+/home/theun/Documents/git/MTG-CM/CollectionManager/src/main/java/mtg/fxmlControllers/CardOverviewController.java
+/home/theun/Documents/git/MTG-CM/CollectionManager/src/main/java/mtg/enums/E_PropertyName.java
