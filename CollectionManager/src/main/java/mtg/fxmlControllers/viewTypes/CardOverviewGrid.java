@@ -63,7 +63,11 @@ public class CardOverviewGrid extends CardOverviewView implements ICardOverview 
     }
 
     @Override
-    public Node CardUIConverter() {
+    public void CardUIConverter() {
+        if (this.mainViewTypeNode != null) {
+            return;
+        }
+        
         System.out.println("Creating GUI Nodes for every card");
         this.mainViewTypeNode = new Pane();
         this.mainViewTypeNode.setPrefWidth(980);
@@ -73,7 +77,7 @@ public class CardOverviewGrid extends CardOverviewView implements ICardOverview 
             addCardComponents(cardPane);
             this.allCardPanes.add(cardPane);
         }
-        return this.mainViewTypeNode;
+        super.CardUINode = this.mainViewTypeNode;
     }
 
     @Override
@@ -130,21 +134,21 @@ public class CardOverviewGrid extends CardOverviewView implements ICardOverview 
 
                 // calculating X & Y
                 endX = X + cardPane.getPrefWidth() + 15;
-                if(endX < this.mainViewTypeNode.getPrefWidth()){
+                if (endX < this.mainViewTypeNode.getPrefWidth()) {
                     cardPane.setLayoutX(X);
                     cardPane.setLayoutY(Y);
-                    
+
                     X = endX;
                 } else {
                     X = 15;
                     Y = Y + cardPane.getPrefHeight() + 15;
-                    
+
                     cardPane.setLayoutX(X);
                     cardPane.setLayoutY(Y);
-                    
+
                     X = X + cardPane.getPrefWidth() + 15;
                 }
-                
+
                 this.currentlyShownCardPanes.add(cardPane);
                 this.mainViewTypeNode.getChildren().add(cardPane);
                 amount = i - beginIndex;
@@ -158,14 +162,14 @@ public class CardOverviewGrid extends CardOverviewView implements ICardOverview 
             List<Pane> tempList = new ArrayList<>(this.currentlyShownCardPanes);
             FillImages fillImages = new FillImages(tempList);
             EmptyImages emptyImages = new EmptyImages(tempList);
-            
+
             threadPool.execute(fillImages);
             threadPool.execute(emptyImages);
         } catch (Exception e) {
             System.err.println(e);
         }
     }
-    
+
     // <editor-fold defaultstate="collapsed" desc="Runnable Classes">
     class FillImages implements Runnable {
 

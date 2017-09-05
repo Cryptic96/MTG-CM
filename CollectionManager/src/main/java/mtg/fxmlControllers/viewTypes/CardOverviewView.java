@@ -8,11 +8,11 @@ import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TitledPane;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -29,12 +29,15 @@ public abstract class CardOverviewView {
     protected CardManager cardManager;
     protected Image defaultImage;
     private final TableColumn propertyCol = new TableColumn("Property");
+    protected Node CardUINode;
 
     // <editor-fold defaultstate="collapsed" desc="FXML Items">
     // Page Controls
+    @FXML
     protected Label lblPage;
-    // </editor-fold>
 
+    // </editor-fold>
+    
     // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
     public int getCardStartIndex() {
         return this.cardStartIndex;
@@ -46,6 +49,10 @@ public abstract class CardOverviewView {
 
     public Image getDefaultImage() {
         return defaultImage;
+    }
+
+    public Node getCardUINode() {
+        return this.CardUINode;
     }
     // </editor-fold>
 

@@ -72,7 +72,11 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
     }
 
     @Override
-    public Node CardUIConverter() {
+    public void CardUIConverter() {
+        if (this.mainViewTypeNode != null) {
+            return;
+        }
+        
         System.out.println("Creating GUI Nodes for every card");
         this.mainViewTypeNode = new Accordion();
         for (Card c : cardManager.getCards()) {
@@ -105,7 +109,7 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
             });
             this.allCardPanes.add(tp);
         }
-        return this.mainViewTypeNode;
+        super.CardUINode = this.mainViewTypeNode;
     }
 
     @Override
@@ -173,7 +177,7 @@ public class CardOverviewList extends CardOverviewView implements ICardOverview 
             FillFieldData fillFieldData = new FillFieldData(tempList);
 
             threadPool.execute(fillImages);
-            threadPool.execute(emptyImages);
+//            threadPool.execute(emptyImages);
             threadPool.execute(fillFieldData);
         } catch (Exception e) {
             System.err.println(e);

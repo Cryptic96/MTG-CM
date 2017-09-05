@@ -32,8 +32,10 @@ public interface ICardOverview {
     public List<?> getCurrentlyShownCardPanes();
 
     public void setCurrentlyShownCardPanes(List<?> currentlyShownCardPanes);
+    
+    public Node getCardUINode();
 
-    public Node CardUIConverter();
+    public void CardUIConverter();
 
     public void addCardComponents(Node node);
     

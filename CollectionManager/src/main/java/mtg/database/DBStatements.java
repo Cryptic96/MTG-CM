@@ -26,11 +26,11 @@ public class DBStatements {
             stmt = c.createStatement();
             String sql
                     = "CREATE TABLE CARD ("
-                    + " ID INT PRIMARY KEY     NOT NULL,"
-                    + " NAME           TEXT    NOT NULL, "
-                    + " AGE            INT     NOT NULL, "
-                    + " ADDRESS        CHAR(50), "
-                    + " SALARY         REAL)";
+                    + " ID          TEXT        PRIMARY KEY     NOT NULL,"
+                    + " LAYOUT      TEXT        NOT NULL, "
+                    + " AGE         INT         NOT NULL, "
+                    + " ADDRESS     CHAR(50), "
+                    + " SALARY      REAL)";
             stmt.execute(sql);
             stmt.close();
         } catch (SQLException e) {

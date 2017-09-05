@@ -14,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import mtg.fxmlControllers.viewTypes.CardOverviewGrid;
@@ -22,10 +23,12 @@ import mtg.managers.CardManager;
 public class CardOverviewController implements Initializable, IController {
 
     private final ExecutorService threadPool = Executors.newCachedThreadPool();
-    
+
     private CardManager cardManager;
     private ICardOverview viewMode;
-    
+    private ICardOverview gridView;
+    private ICardOverview listView;
+
     // <editor-fold defaultstate="collapsed" desc="FXML Items">
     // Buttons 
     @FXML
@@ -40,7 +43,7 @@ public class CardOverviewController implements Initializable, IController {
     private ScrollPane cardOverviewPane;
     @FXML
     private Label lblPage;
-    
+
     // Loading Screen
     @FXML
     private ProgressBar progressBar;
@@ -50,6 +53,12 @@ public class CardOverviewController implements Initializable, IController {
     // Filter Options
     @FXML
     private TextField tfSearchBar;
+
+    // View modes
+    @FXML
+    protected RadioMenuItem RMIlist;
+    @FXML
+    protected RadioMenuItem RMIgrid;
     // </editor-fold>
 
     public CardOverviewController() {
@@ -59,15 +68,14 @@ public class CardOverviewController implements Initializable, IController {
     public void initialize(URL url, ResourceBundle rb) {
         this.lblPage.setId("lblPage");
         Node[] nodes = {this.lblPage};
-        
+
         this.cardManager = new CardManager(this);
-        
+
         // Check radiobuttons for view mode
-        // TODO: create if-statement for radiobuttons
-        
-        
-//        this.viewMode = new CardOverviewList(threadPool, cardManager, nodes);
-        this.viewMode = new CardOverviewGrid(threadPool, cardManager, nodes);
+        this.listView = new CardOverviewList(threadPool, cardManager, nodes);
+        this.gridView = new CardOverviewGrid(threadPool, cardManager, nodes);
+
+        changeViewMode();
         
         // fill cards at the beginning
         cardManager.ReadAllCardsFromFile();
@@ -137,7 +145,23 @@ public class CardOverviewController implements Initializable, IController {
         viewMode.refreshCardPages(
                 viewMode.getCardStartIndex(),
                 viewMode.getFilterCardPanes());
-        
+
+    }
+
+    @FXML
+    private void RMIChangedSelected(ActionEvent event) {
+        changeViewMode();
+        refresh();
+    }
+
+    private void changeViewMode() {
+        if (RMIgrid.isSelected()) {
+            this.viewMode = this.gridView;
+        }
+
+        if (RMIlist.isSelected()) {
+            this.viewMode = this.listView;
+        }
     }
     // </editor-fold>
 
@@ -152,7 +176,7 @@ public class CardOverviewController implements Initializable, IController {
                     viewMode.getFilterCardPanes());
         }
     }
-    
+
     @Override
     public void refresh() {
         try {
@@ -160,9 +184,10 @@ public class CardOverviewController implements Initializable, IController {
                 @Override
                 public void run() {
                     viewMode.setCardStartIndex(0);
-                    cardOverviewPane.setContent(viewMode.CardUIConverter());
+                    viewMode.CardUIConverter();
+                    cardOverviewPane.setContent(viewMode.getCardUINode());
                     viewMode.refreshCardPages(
-                            viewMode.getCardStartIndex(), 
+                            viewMode.getCardStartIndex(),
                             viewMode.getAllCardPanes());
 
                     btnLoadFromAPI.setDisable(false);
