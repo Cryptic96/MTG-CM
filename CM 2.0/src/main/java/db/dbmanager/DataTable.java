@@ -7,6 +7,8 @@ package db.dbmanager;
 import db.exceptions.TableRowAlreadyExists;
 import db.exceptions.TableRowNotFound;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,14 +21,14 @@ public class DataTable
     /**
      * The rows of the <code>DataTable</code>.
      */
-    private final Map<String, Object> rows;
+    private final List<Map<String, Object>> rows;
 
     /**
      * Initialises an empty <code>Datatable</code> for your data.
      */
     public DataTable()
     {
-        rows = new HashMap<>();
+        rows = new LinkedList<>();
     }
 
     /**

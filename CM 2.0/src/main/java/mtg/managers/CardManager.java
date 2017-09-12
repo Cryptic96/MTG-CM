@@ -1,7 +1,6 @@
 package mtg.managers;
 
 import db.dbmanager.IPersistence;
-import db.dbmanager.SQLITEPersistence;
 import io.magicthegathering.javasdk.api.CardAPI;
 import io.magicthegathering.javasdk.resource.Card;
 import java.io.File;
@@ -10,27 +9,30 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import mtg.fxmlControllers.IController;
 import mtg.magicthegatheringcm.Constants;
 import mtg.magicthegatheringcm.MainApp;
 
 public class CardManager
 {
 
-    private static final String CARD_COLLECTION_PATH = "./files/all_cards.clist";
-    private final File cardListFile = new File(CARD_COLLECTION_PATH);
+    private final File cardListFile = new File(Constants.CARD_COLLECTION_PATH);
 
-    private static List<Card> cards;
+    private static List<Card> allCards;
+    private final IPersistence persistence;
+    private final IController controller;
 
     public List<Card> getCards()
     {
-        return cards;
+        return allCards;
     }
 
-    public CardManager()
+    public CardManager(IPersistence persistence, IController controller)
     {
+        this.persistence = persistence;
+        this.controller = controller;
 
     }
 
@@ -43,10 +45,9 @@ public class CardManager
             public void run()
             {
                 System.out.println("Calling API for All Cards");
-                cards = CardAPI.getAllCards();
+                allCards = CardAPI.getAllCards();
                 System.out.println("Done getting Cards");
 
-                IPersistence database = new SQLITEPersistence();
                 // TODO: update database
             }
         };
@@ -67,8 +68,8 @@ public class CardManager
                 try
                 {
                     System.out.println("Calling API for Filtered Cards");
-                    cards = CardAPI.getAllCards(filters);
-                    Collections.reverse(cards);
+                    allCards = CardAPI.getAllCards(filters);
+                    Collections.reverse(allCards);
                     System.out.println("Done getting Cards");
                 }
                 catch (Exception e)
@@ -97,8 +98,9 @@ public class CardManager
                     System.out.println("Starting to read cards from file");
                     FileInputStream fis = new FileInputStream(cardListFile);
                     ObjectInputStream ois = new ObjectInputStream(fis);
-                    cards = (List<Card>) ois.readObject();
-                    Collections.reverse(cards);
+                    allCards = (List<Card>) ois.readObject();
+                    Collections.reverse(allCards);
+                    controller.refresh();
                     System.out.println("Done Reading cards from file");
                 }
                 catch (IOException | ClassNotFoundException e)
@@ -118,7 +120,7 @@ public class CardManager
      */
     public void WriteAllCardsToFile() throws Exception
     {
-        if (cards.size() <= 0)
+        if (allCards.size() <= 0)
         {
             throw new Exception("There are no cards in local list!");
         }
@@ -133,8 +135,8 @@ public class CardManager
                     System.out.println("Starting to write cards to file");
                     FileOutputStream fos = new FileOutputStream(cardListFile);
                     ObjectOutputStream oos = new ObjectOutputStream(fos);
-                    Collections.reverse(cards);
-                    oos.writeObject(cards);
+                    Collections.reverse(allCards);
+                    oos.writeObject(allCards);
                     System.out.println("Done Writing cards to file");
                 }
                 catch (IOException e)
@@ -144,5 +146,12 @@ public class CardManager
             }
         };
         MainApp.getThreadpool().execute(run);
+    }
+
+    public List<Card> getPageOfCards(int startIndex)
+    {
+        
+        
+        return null;
     }
 }
